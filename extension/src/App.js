@@ -12,6 +12,8 @@ class App extends Component {
       palette: props.colorPalette,
       active: props.colorPalette[Math.floor(props.colorPalette.length / 2)]
     }
+
+    props.changeColor(this.state.active);
   }
 
   activeColorHandler(color) {
@@ -19,10 +21,8 @@ class App extends Component {
       palette: this.state.palette,
       active: color
     });
-  }
 
-  getActiveColor () {
-    return this.state.active;
+    this.props.changeColor(this.state.active);
   }
 
   render() {

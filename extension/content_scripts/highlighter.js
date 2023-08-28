@@ -4,9 +4,6 @@
 
 //  Disable highlighting when mouseover Extension
 
-
-
-
 let active = false;
 
 document.addEventListener("keydown", (evt) =>
@@ -23,10 +20,13 @@ document.addEventListener("keydown", (evt) =>
 
 
 // Highlight the Selected text
-let color = "#ccc";
-document.addEventListener("mouseup", () =>
+let currColor = "#ccc";
+document.addEventListener("mouseup", async () =>
 {
     if (!active) {return;}
+    currColor = await chrome.storage.sync.get(["color"]);
+
+    console.log(currColor.color);
 
     const selection = window.getSelection();
     const range = new Range();
@@ -35,7 +35,7 @@ document.addEventListener("mouseup", () =>
     range.setEnd(selection.focusNode, selection.focusOffset);
 
     const highlight = document.createElement('span');
-    highlight.style.backgroundColor = color;
+    highlight.style.backgroundColor = currColor.color;
     highlight.addEventListener("ondblclick", () => highlight.parentNode.removeChild(highlight));
 
     range.surroundContents(highlight);

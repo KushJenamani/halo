@@ -14,5 +14,8 @@
       "js": ["./static/js/highlighter.js"],
       "matches": ["<all_urls>"]
     }
+  ],
+  "permissions": [
+    "storage"
   ]
 }

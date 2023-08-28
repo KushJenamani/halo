@@ -18,7 +18,8 @@ function ColorBox (props) {
         <div style={
             {...unfocussedStyle, 
             outline: props.active ? props.color + " solid 2px" : "#ddd solid 1px", 
-            opacity: props.active? '1': '0.5'}
+            opacity: props.active? '1': '0.5'
+            }
             }
             onClick={props.changeColor}
             >
