@@ -16,7 +16,19 @@ class App extends Component {
   
   componentDidMount() {
     chrome.storage.sync.get(["colorPalette", "color"], (data) => {
-      this.setStateFromData(data);
+      if (typeof data === undefined) {
+        chrome.storage.sync.set({
+          colorPalette: ['purple', 'lightpink', 'khaki', 'powderblue', 'lime'],
+          color: 'khaki'
+        }).then(() => {
+          chrome.storage.sync.get(["colorPalette", "color"], (data) => {
+            this.setStateFromData(data);
+          })
+        })
+      }
+      else {
+        this.setStateFromData(data);
+      }
     });
   }
   
@@ -50,6 +62,7 @@ class App extends Component {
             <ColorBox color={color} active={color === this.state.active} changeColor={() => this.activeColorHandler(color)}/>
           </li>
         )}
+
       </ul>
     );
   }
