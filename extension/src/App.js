@@ -2,30 +2,45 @@ import './App.css';
 import React, {Component} from 'react';
 import ColorBox from './components/ColorBox.js';
 
+/* global chrome*/
 
 class App extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
-    this.props = props;
-
+  
     this.state = {
-      palette: props.colorPalette,
-      active: props.colorPalette[Math.floor(props.colorPalette.length / 2)]
-    }
-
-    props.changeColor(this.state.active);
+      palette: [],
+      active: ''
+    };
+  }
+  
+  componentDidMount() {
+    chrome.storage.sync.get(["colorPalette", "color"], (data) => {
+      this.setStateFromData(data);
+    });
+  }
+  
+  setStateFromData(data) {
+    this.setState({
+      palette: data.colorPalette,
+      active: data.color
+    });
   }
 
   activeColorHandler(color) {
+    chrome.storage.sync.set({
+      colorPalette: this.state.palette,
+      color: color
+    }).then();
+
     this.setState({
       palette: this.state.palette,
       active: color
     });
-
-    this.props.changeColor(this.state.active);
   }
 
   render() {
+    console.log(this.state.palette);
     return (
       <ul style={{listStyle: "none", margin: "0 0", padding: "0 0", 
             display: "flex", flexWrap: "wrap", flexDirection: "row", width: "60px"
