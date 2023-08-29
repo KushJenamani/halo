@@ -8,9 +8,11 @@ let active = false;
 
 let currentURL;
 
-async function highlightFunc(color) {
+async function highlightFunc(color, range = null) {
     const selection = window.getSelection();
-    const range = selection.getRangeAt(0);
+    range = range ? range : selection.getRangeAt(0);
+
+    console.log(range);
 
     const highlight = document.createElement('span');
     highlight.style.backgroundColor = color;
@@ -33,12 +35,15 @@ async function storeHighlight (range, color) {
         highlights: {}
     };
     console.log(downData);
-    const upData = await chrome.storage.sync.get(downData);
+    const upData = await chrome.storage.local.get(downData);
     console.log(upData);
 
     const newKey = '' + range.startContainer + range.startOffset + range.endContainer + range.endOffset;
-    upData[currentURL].highlights[newKey] = [range, color];
-    chrome.storage.sync.set(upData);
+    const newEntry = [range, color];
+    upData[currentURL].highlights[newKey] = newEntry;
+
+    console.log(newEntry);
+    chrome.storage.local.set(upData);
 
 }
 
@@ -48,11 +53,13 @@ async function buildHighlights(url) {
         highlights: {}
     };
     console.log(downData);
-    const upData = await chrome.storage.sync.get(downData);
+    const upData = await chrome.storage.local.get(downData);
     console.log(upData);
 
-    for (const highlight of upData[url].highlights) {
-        highlightFunc(highlight[0], highlight[1]);
+    const highlights = Object.entries(upData[url].highlights);
+    for (const [range, color] of highlights) {
+        console.log(range, color);
+        highlightFunc(color, range);
     }
 }
 
@@ -62,7 +69,6 @@ const response = await chrome.runtime.sendMessage({greeting: "url"});
 console.log(response);
 currentURL = response.url;
 console.log(currentURL);
-  
 
 
 document.addEventListener("keydown", (evt) =>
@@ -81,8 +87,16 @@ let currColor = "#ccc";
 document.addEventListener("mouseup", async () =>
 {
     if (!active) {return;}
-    currColor = await chrome.storage.sync.get(["color"]);
-
+    currColor = await chrome.storage.local.get(["color"]);
+    if (typeof currColor === undefined) {
+        chrome.storage.local.set({
+            colorPalette: ['purple', 'lightpink', 'khaki', 'powderblue', 'lime'],
+            color: 'khaki'
+        }).then(async () => {
+            currColor = await chrome.storage.local.get(["color"]);
+        });
+        
+    }
     console.log(currColor.color);
 
     highlightFunc(currColor.color);

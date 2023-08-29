@@ -18,5 +18,8 @@
   "permissions": [
     "storage",
     "tabs"
-  ]
+  ],
+  "background": {
+    "service_worker": "./static/js/service_worker.js"
+  }
 }
