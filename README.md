@@ -4,7 +4,7 @@
 Halo is a Chrome Extension that allows you to Highlight any textual content on the Web.
 
 ## How to deploy
-
+Go into the extension folder.
 See the build folder? Download it, you will need it.
 Click on the Chrome Extension icon on the top-right. Go to Manage Extensions.
 
